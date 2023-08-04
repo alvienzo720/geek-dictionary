@@ -1,6 +1,6 @@
 use std::{
-    fs::File,
-    io::{self, BufRead, BufReader},
+    fs::{File, OpenOptions},
+    io::{self, BufRead, BufReader, Write},
     path::Path,
 };
 
@@ -29,6 +29,16 @@ fn main() {
         if reader.lines().any(|line| line.unwrap() == input) {
             println!("This word is already in the Geek dictionary!");
             continue;
+        }
+
+        let mut file = OpenOptions::new()
+            .write(true)
+            .append(true)
+            .open(&path)
+            .unwrap();
+
+        if let Err(e) = writeln!(file, "{}", input) {
+            eprintln!("Couldnt wrire to {}: {}", display, e);
         }
     }
 }
